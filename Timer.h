@@ -19,8 +19,7 @@ class Timer{
 	}
 
 	void deleteTime(int index) {timeList.begin() = timeList.erase(timeList.begin()+index);}
-
-	double getAverageTime() 
+double getAverageTime() 
 	{
 		return std::accumulate(timeList.begin(), timeList.end(),0) / (double)timeList.size();
 	}
@@ -33,7 +32,6 @@ class Timer{
 		for(auto&& t: timeList)
 		{
 			deviations.push_back(abs(pow(t-avg,2)));
-			std::cout << "Time: " << t << "  Value: " << abs(pow(t-avg,2)) <<std::endl;
 		}
 		return sqrt(std::accumulate(deviations.begin(),deviations.end(),0) / (double)deviations.size());
 	}

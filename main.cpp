@@ -17,6 +17,7 @@ int main(){
 
 	Mandelbrot m1("m1.ppm",512,512,c1,c2,1024);
 	Timer mand1;
+	std::cout << std::endl << "Warming up the cache for accurate timings, please wait..." << std::endl;
 	m1.generate();
 	for(int i=0;i<5;++i)
 	{

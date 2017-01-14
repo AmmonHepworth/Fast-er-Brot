@@ -8,9 +8,12 @@ class Mandelbrot{
 
 	public:
 	Mandelbrot(std::string file, int rows, int cols, std::complex<double> c1, std::complex<double> c2, int maxIters);
+
 	std::vector<int> pixelValue;
 	void generate();
 	void write();
+
+	//void generate2();
 
 	private:
 	int mandelbrot(std::complex<double>, int);
@@ -21,6 +24,7 @@ class Mandelbrot{
 	int cols;
 	std::complex<double> c1;
 	std::complex<double> c2;
+
 
 };
 
