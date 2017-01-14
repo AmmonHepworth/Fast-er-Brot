@@ -49,13 +49,14 @@ void Mandelbrot::write()
 void Mandelbrot::storeColor(std::complex<double> ci)
 {
 	int r,g,b;
-	if (mandelbrot(ci,maxIters) == 0) {
+	auto cValue = mandelbrot(ci,maxIters);
+	if (cValue == 0) {
 		r = 0; g = 0; b = 0;
 	}
 	else {
-		r = mandelbrot(ci,maxIters) % 255 * sin((mandelbrot(ci,maxIters)));
-		g = mandelbrot(ci,maxIters) % 255 * cos(mandelbrot(ci,maxIters));
-		b = mandelbrot(ci,maxIters) % 255;
+		r = cValue % 255 * sin(cValue);
+		g = cValue % 255 * cos(cValue);
+		b = cValue % 255;
 	}
 
 	pixelValue.push_back(r);	
