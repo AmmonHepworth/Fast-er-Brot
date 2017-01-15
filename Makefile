@@ -1,2 +1,2 @@
-release: Mandelbrot.cpp Mandelbrot.h main.cpp
-	g++ -std=c++14 -O3 -g0 -o./release Mandelbrot.cpp Mandelbrot.h main.cpp
+release: Mandelbrot.cpp Mandelbrot.h Mandelbrot2.h Mandelbrot2.cpp main.cpp
+	g++ -std=c++14 -Werror -Wextra -Wall -O3 -o./release Mandelbrot.cpp Mandelbrot.h Mandelbrot2.h Mandelbrot2.cpp main.cpp

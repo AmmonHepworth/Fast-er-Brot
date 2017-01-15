@@ -71,8 +71,8 @@ void Mandelbrot::generate2()
 	{
 		for(int j=0;i<cols;++j)
 		{
-			double x0 = x1+(x1-x2)/cols*j;
-			double y0 = y1+(y1-y2)/rows*i;
+			double x0 = x1+(x1-x2)/cols*i;
+			double y0 = y1+(y1-y2)/rows*j;
 			double x = 0.0;
 			double y = 0.0;
 			int iteration = 0;

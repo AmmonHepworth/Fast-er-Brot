@@ -18,12 +18,12 @@ class Mandelbrot{
 	private:
 	int mandelbrot(std::complex<double>, int);
 	void storeColor(std::complex<double> c1);
-	int maxIters;
-	std::string fileName;
-	int rows;
-	int cols;
-	std::complex<double> c1;
-	std::complex<double> c2;
+	std::string fileName="";
+	int rows=512;
+	int cols=512;
+	std::complex<double> c1 = {-2,1};
+	std::complex<double> c2 = {1,-1};
+	int maxIters=1000;
 
 
 };
