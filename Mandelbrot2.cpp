@@ -49,8 +49,8 @@ void Mandelbrot2::generate()
 				r = 0; g = 0; b = 0;
 			}
 			else {
-				r = iteration % 255 * sin(iteration);
-				g = iteration % 255 * cos(iteration);
+				r = abs(iteration % 255 * sin(iteration));
+				g = iteration % 255;
 				b = iteration % 255;
 			}
 			pixelValue.push_back(r);	
