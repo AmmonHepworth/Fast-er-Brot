@@ -2,7 +2,6 @@
 #include <vector>
 #include <numeric>
 #include <cmath>
-#include <iostream>
 
 
 class Timer{
