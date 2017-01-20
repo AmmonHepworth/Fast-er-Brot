@@ -6,11 +6,11 @@
 #include <thread>
 
 
-Mandelbrot2::Mandelbrot2(std::string file, int r, int c, double x_1, double y_1, double x_2, double y_2, int maxIter):fileName(file),rows(r),cols(c),x1(x_1),y1(y_1),x2(x_2),y2(y_2),maxIters(maxIter)
+Mandelbrot2::Mandelbrot2(std::string file, int r, int c, double x_1, double y_1, double x_2, double y_2, int maxIter, int numThreads):fileName(file),rows(r),cols(c),x1(x_1),y1(y_1),x2(x_2),y2(y_2),maxIters(maxIter),threadCount(numThreads)
 {
 	pixelValue.reserve(rows*cols);
 	int threadNum = std::thread::hardware_concurrency();
-	for(int i=0;i<threadNum;++i)
+	for(int i=0;i<=threadNum;++i)
 	{
 		fabric.push_back(std::vector<int>());
 		fabric[i].reserve((rows*cols/threadNum));
@@ -72,14 +72,20 @@ void Mandelbrot2::generate()
 
 void Mandelbrot2::generateParallel()
 {
-	int threadCount = std::thread::hardware_concurrency()-1;
-	std::vector<std::thread> threads;
-	for(int i=1;i<=threadCount;i++)
+	//int threadCount = std::thread::hardware_concurrency()-1;
+	if((unsigned int)threadCount > std::thread::hardware_concurrency())
 	{
-		//threads.push_back(std::thread(&Mandelbrot2::createpixelFabric,this,(i-1)*(rows*cols)/threadCount,i*(rows*cols)/threadCount));
-		threads.push_back(std::thread([=](){this->createpixelFabric((i-1)*(rows*cols)/threadCount,i*(rows*cols)/threadCount,i);}));
-		
+		std::cout << "You do not have this many threads available, running with " << std::thread::hardware_concurrency() << " instead." << std::endl;
+		threadCount = std::thread::hardware_concurrency()-1;
 	}
+
+	std::vector<std::thread> threads;
+	for(int i=1;i<=threadCount-1;i++)
+	{
+		threads.push_back(std::thread([=](){this->createpixelFabric((i-1)*(rows*cols)/threadCount,i*(rows*cols)/threadCount,i);}));
+	}
+	createpixelFabric((threadCount-1)*(rows*cols)/threadCount,threadCount*(rows*cols)/threadCount,threadCount);
+
 	for(auto && t:threads)
 	{
 		t.join();
@@ -100,8 +106,6 @@ void Mandelbrot2::createpixelFabric(int start, int end, int fabricNumber)
 	double xtemp;
 	for(int i=start;i<end;++i)
 	{
-	//	for(int j=0;j<cols;++j)
-	//	{
 			x0 = x1+(x2-x1)/cols*(i%cols);
 			y0 = y1+(y2-y1)/rows*(i/rows);
 			x = 0.0;
@@ -125,7 +129,6 @@ void Mandelbrot2::createpixelFabric(int start, int end, int fabricNumber)
 			fabric[fabricNumber].push_back(r);	
 			fabric[fabricNumber].push_back(g);	
 			fabric[fabricNumber].push_back(b);	
-	//	}
 	}
 
 }
