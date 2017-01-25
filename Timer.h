@@ -35,9 +35,27 @@ double getAverageTime()
 		return sqrt(std::accumulate(deviations.begin(),deviations.end(),0) / (double)deviations.size());
 	}
 
+	void start()
+	{
+		startTime = std::chrono::steady_clock::now();
+	}
+
+	void end()
+	{
+		endTime = std::chrono::steady_clock::now(); 
+	}
+
+	double record()
+	{
+		timeList.push_back(std::chrono::duration <double, std::milli>(endTime-startTime).count());
+		return std::chrono::duration <double, std::milli>(endTime-startTime).count();
+	}
+
 
 	private:
 	std::vector<double> timeList;
+	std::chrono::time_point<std::chrono::steady_clock> startTime;
+	std::chrono::time_point<std::chrono::steady_clock> endTime;
 
 
 };

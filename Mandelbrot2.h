@@ -13,7 +13,6 @@ class Mandelbrot2{
 	void write();
 	void generateParallel();
 	void createpixelFabric(int pixelStart, int pixelEnd);
-	void stitchFabrics();
 
 	private:
 	std::string fileName;
