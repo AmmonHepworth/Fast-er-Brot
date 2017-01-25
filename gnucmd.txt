@@ -1,0 +1,15 @@
+set terminal png
+set output 'threadEfficiency.png'
+
+set xlabel "Threads"
+
+#set autoscale
+set yrange [0:1000]
+
+set ylabel "Time (ms)"
+
+set title "seq number over time"
+
+#set style data linespoints
+
+plot "data.dat" using 1:2 with linespoints
