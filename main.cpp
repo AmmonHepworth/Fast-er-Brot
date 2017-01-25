@@ -27,6 +27,7 @@ int main(){
 
 	std::ofstream graphData("data.dat");
 	std::string data;
+
 	//generates average mandelbrots for 1-4 threads
 	for(int threads=1; threads<50 ; ++threads){
 		mand1 = Timer();
@@ -34,7 +35,9 @@ int main(){
 		std::cout << threads << " THREADS: " << std::endl << std::endl;
 		for(int i=0;i<5;++i)
 		{
+
 			std::cout << mand1.timeTask<Mandelbrot2, &Mandelbrot2::generateParallel>(new Mandelbrot2("m"+std::to_string(threads)+".ppm", 512, 512,(double)-2,(double)1,(double)1,(double)-1, 1024, threads)) << std::endl;
+
 		}
 		std::cout << "Average: " << mand1.getAverageTime() << std::endl;
 		std::cout << "Std Dev: " << mand1.getStdDev() << std::endl;

@@ -12,4 +12,5 @@ set title "seq number over time"
 
 #set style data linespoints
 
+set term x11 0
 plot "data.dat" using 1:2 with linespoints
