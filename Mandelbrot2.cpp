@@ -9,6 +9,7 @@
 Mandelbrot2::Mandelbrot2(std::string file, int r, int c, double x_1, double y_1, double x_2, double y_2, int maxIter, int numThreads):fileName(file),rows(r),cols(c),x1(x_1),y1(y_1),x2(x_2),y2(y_2),maxIters(maxIter),threadCount(numThreads)
 {
 	pixelValue.reserve(3*rows*cols);
+	//pixelValue.resize(3*rows*cols);
 }
 
 
@@ -56,9 +57,12 @@ void Mandelbrot2::generate()
 				g = iteration % 255;
 				b = iteration % 255;
 			}
-			pixelValue[3*i]   = r;
-			pixelValue[(3*i)+1] = g;
-			pixelValue[(3*i)+2] = b;
+			//pixelValue[3*i]   = r;
+			//pixelValue[(3*i)+1] = g;
+			//pixelValue[(3*i)+2] = b;
+			pixelValue.push_back(r);
+			pixelValue.push_back(g);
+			pixelValue.push_back(b);
 		}
 	}
 }
