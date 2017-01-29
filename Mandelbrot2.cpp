@@ -56,9 +56,9 @@ void Mandelbrot2::generate()
 				g = iteration % 255;
 				b = iteration % 255;
 			}
-			pixelValue.push_back(r);		
-			pixelValue.push_back(g);	
-			pixelValue.push_back(b);	
+			pixelValue[3*i]   = r;
+			pixelValue[(3*i)+1] = g;
+			pixelValue[(3*i)+2] = b;
 		}
 	}
 }
@@ -114,9 +114,9 @@ void Mandelbrot2::createpixelFabric(int start, int end)
 				g = iteration % 255;
 				b = iteration % 255;
 			}
-			pixelValue[i] = r;
-			pixelValue[i+1] = g;
-			pixelValue[i+2] = b;
+			pixelValue[3*i] = r;
+			pixelValue[(3*i)+1] = g;
+			pixelValue[(3*i)+2] = b;
 	}
 
 }

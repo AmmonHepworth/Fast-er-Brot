@@ -29,7 +29,7 @@ int main(){
 	std::string data;
 
 	//generates average mandelbrots for 1-4 threads
-	for(int threads=1; threads<50 ; ++threads){
+	for(int threads=1; threads<9; ++threads){
 		mand1 = Timer();
 		std::cout << "------------------------------------------------" << std::endl;
 		std::cout << threads << " THREADS: " << std::endl << std::endl;
@@ -41,8 +41,10 @@ int main(){
 		}
 		std::cout << "Average: " << mand1.getAverageTime() << std::endl;
 		std::cout << "Std Dev: " << mand1.getStdDev() << std::endl;
-		graphData << threads << " " << mand1.getAverageTime() << " " << mand1.getStdDev() << std::endl;
-	std::cout << std::endl << "Speedup of the average: " << mand2.getAverageTime()/mand1.getAverageTime() << std::endl;
+		graphData << threads << " " << mand1.getAverageTime() << std::endl;
+		std::cout << std::endl << "Speedup over the average: " << mand2.getAverageTime()/mand1.getAverageTime() << std::endl;
+		std::cout << "Efficiency: " << (mand2.getAverageTime()/mand1.getAverageTime())/threads << std::endl;
+
 	}
 
 	m1.write();
