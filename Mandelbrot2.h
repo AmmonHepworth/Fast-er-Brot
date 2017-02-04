@@ -12,6 +12,7 @@ class Mandelbrot2{
 	void generate();
 	void write();
 	void generateParallel();
+	void generateParallelPool();
 	void createpixelFabric(int pixelStart, int pixelEnd);
 
 	private:

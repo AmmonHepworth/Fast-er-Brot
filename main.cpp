@@ -1,5 +1,6 @@
 #include "Mandelbrot2.h"
 #include "Timer.h"
+#include "ThreadPool.h"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -7,6 +8,17 @@
 
 int main(){
 
+
+
+	Mandelbrot2 m1("m1.ppm",512,512,(double)-2,(double)1,(double)1,(double)-1,1024, 4);
+	m1.generateParallelPool();
+	Timer mand1;
+		std::cout << mand1.timeTask<Mandelbrot2, &Mandelbrot2::generateParallelPool>(new Mandelbrot2("m1.ppm", 512, 512,(double)-2,(double)1,(double)1,(double)-1, 1024, 40)) << std::endl;
+
+	//m1.generateParallelPool();
+	m1.write();
+
+/*
 	std::cout << "THIS PROGRAM ONLY OUTPUTS ONE IMAGE TO A FILE, IT ONLY GENERATES THE OTHERS" << std::endl;
 	std::cout << "Five image generations will be used for the calculations." << std::endl;
 
@@ -15,7 +27,7 @@ int main(){
 
 	std::cout << std::endl << "Warming up the cache for accurate timings, please wait..." << std::endl;
 
-	m1.generate();
+	m1.generateParallel();
 
 	for(int i=0;i<5;++i)
 	{
@@ -50,4 +62,5 @@ int main(){
 	m1.write();
 	return system("gnuplot -p gnucmd.txt");
 
+*/
 }

@@ -1,4 +1,5 @@
 #include "Mandelbrot2.h"
+#include "ThreadPool.h"
 #include <iostream>
 #include <cmath>
 #include <cstring> 
@@ -8,8 +9,8 @@
 
 Mandelbrot2::Mandelbrot2(std::string file, int r, int c, double x_1, double y_1, double x_2, double y_2, int maxIter, int numThreads):fileName(file),rows(r),cols(c),x1(x_1),y1(y_1),x2(x_2),y2(y_2),maxIters(maxIter),threadCount(numThreads)
 {
-	pixelValue.reserve(3*rows*cols);
-	//pixelValue.resize(3*rows*cols);
+//	pixelValue.reserve(3*rows*cols);
+	pixelValue.resize(3*rows*cols,0);
 }
 
 
@@ -96,6 +97,7 @@ void Mandelbrot2::createpixelFabric(int start, int end)
 	double y = 0.0;
 	int iteration = 0;
 	double xtemp;
+
 	for(int i=start;i<end;++i)
 	{
 			x0 = x1+(x2-x1)/cols*(i%cols);
@@ -124,3 +126,30 @@ void Mandelbrot2::createpixelFabric(int start, int end)
 	}
 
 }
+
+
+void Mandelbrot2::generateParallelPool()
+{
+
+	ThreadPool pool(threadCount);
+
+	for(int i=0;i<rows;++i)
+	{
+			pool.post([=](){this->createpixelFabric(i*rows,(i*rows)+cols-1);});
+	}
+
+//	createpixelFabric((threadCount-1)*(rows*cols)/threadCount,threadCount*(rows*cols)/threadCount);
+
+	//notify loop
+	while(pool.getPostCount())
+	{
+		pool.notify();
+	}
+
+	pool.stop();
+	
+
+
+}
+
+
