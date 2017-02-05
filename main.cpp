@@ -12,12 +12,19 @@ int main(){
 	Mandelbrot2 m1("m1.ppm",512,512,(double)-2,(double)1,(double)1,(double)-1,1024, 4, 5);
 	m1.generateParallelPool();
 	Timer mand1;
-	std::vector<std::ofstream> outFile;
-	outFile.push_back(std::ofstream("./graphFiles/pixel.dat"));
-	outFile.push_back(std::ofstream("./graphFiles/lessRow.dat"));
-	outFile.push_back(std::ofstream("./graphFiles/row.dat"));
-	outFile.push_back(std::ofstream("./graphFiles/moreRow.dat"));
-	outFile.push_back(std::ofstream("./graphFiles/rowDivN.dat"));
+	std::vector<std::ofstream*> outFile;
+	std::ofstream a("./graphFiles/pixel.dat");
+	//a.open("./graphFiles/pixel.dat");
+	std::ofstream b("./graphFiles/lessRow.dat");
+	std::ofstream c("./graphFiles/row.dat");
+	std::ofstream d("./graphFiles/moreRow.dat");
+	std::ofstream e("./graphFiles/rowDivN.dat");
+
+	outFile.push_back(&a);
+	outFile.push_back(&b);
+	outFile.push_back(&c);
+	outFile.push_back(&d);
+	outFile.push_back(&e);
 	
 	for(int chunkType=1;chunkType<6;++chunkType)
 	{
@@ -25,8 +32,8 @@ int main(){
 		for(int i=1; i<9; ++i)
 		{
 			{
-				outFile[chunkType-1] << i << " " ;
-				outFile[chunkType-1] << mand1.timeTask<Mandelbrot2, &Mandelbrot2::generateParallelPool>(new Mandelbrot2("m1.ppm", 512, 512,(double)-2,(double)1,(double)1,(double)-1, 1024, i, chunkType)) << std::endl;
+				*outFile[chunkType-1] << i << " " ;
+				*outFile[chunkType-1] << mand1.timeTask<Mandelbrot2, &Mandelbrot2::generateParallelPool>(new Mandelbrot2("m1.ppm", 512, 512,(double)-2,(double)1,(double)1,(double)-1, 1024, i, chunkType)) << std::endl;
 			}
 		}
 	}
