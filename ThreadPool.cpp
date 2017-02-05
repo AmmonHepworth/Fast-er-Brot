@@ -34,7 +34,6 @@ void ThreadPool::run()
 		}
 		if(task) {
 			{
-				std::lock_guard<std::mutex> lock( std::mutex);
 			--postCount;
 			}
 			//	std::cout << "Pre task run, decrement post count, postCount:" << postCount << std::endl;

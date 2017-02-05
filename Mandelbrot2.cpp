@@ -3,13 +3,14 @@
 #include <iostream>
 #include <cmath>
 #include <cstring> 
-#include <fstream>
-#include <thread>
+#include <fstream> 
+#include <thread> 
+#include <cstdlib>
 
 
-Mandelbrot2::Mandelbrot2(std::string file, int r, int c, double x_1, double y_1, double x_2, double y_2, int maxIter, int numThreads):fileName(file),rows(r),cols(c),x1(x_1),y1(y_1),x2(x_2),y2(y_2),maxIters(maxIter),threadCount(numThreads)
+Mandelbrot2::Mandelbrot2(std::string file, int r, int c, double x_1, double y_1, double x_2, double y_2, int maxIter, int numThreads, int chunky):fileName(file),rows(r),cols(c),x1(x_1),y1(y_1),x2(x_2),y2(y_2),maxIters(maxIter),threadCount(numThreads),chunk(chunky)
 {
-//	pixelValue.reserve(3*rows*cols);
+	//	pixelValue.reserve(3*rows*cols);
 	pixelValue.resize(3*rows*cols,0);
 }
 
@@ -33,7 +34,7 @@ void Mandelbrot2::generate()
 	double y = 0.0;
 	int iteration = 0;
 	double xtemp;
-	
+
 	for(int i=0;i<rows;++i)
 	{
 		for(int j=0;j<cols;++j)
@@ -100,29 +101,29 @@ void Mandelbrot2::createpixelFabric(int start, int end)
 
 	for(int i=start;i<end;++i)
 	{
-			x0 = x1+(x2-x1)/cols*(i%cols);
-			y0 = y1+(y2-y1)/rows*(i/rows);
-			x = 0.0;
-			y = 0.0;
-			iteration = 0;
+		x0 = x1+(x2-x1)/cols*(i%cols);
+		y0 = y1+(y2-y1)/rows*(i/rows);
+		x = 0.0;
+		y = 0.0;
+		iteration = 0;
 
-			while (x*x + y*y < 4  &&  iteration < maxIters) {
-				xtemp = x*x - y*y + x0;
-				y = 2*x*y + y0;
-				x = xtemp;
-				++iteration;
-			}
-			if (iteration == 1) {
-				r = 0; g = 0; b = 0;
-			}
-			else {
-				r = abs(iteration % 255 * sin(iteration));
-				g = iteration % 255;
-				b = iteration % 255;
-			}
-			pixelValue[3*i] = r;
-			pixelValue[(3*i)+1] = g;
-			pixelValue[(3*i)+2] = b;
+		while (x*x + y*y < 4  &&  iteration < maxIters) {
+			xtemp = x*x - y*y + x0;
+			y = 2*x*y + y0;
+			x = xtemp;
+			++iteration;
+		}
+		if (iteration == 1) {
+			r = 0; g = 0; b = 0;
+		}
+		else {
+			r = abs(iteration % 255 * sin(iteration));
+			g = iteration % 255;
+			b = iteration % 255;
+		}
+		pixelValue[3*i] = r;
+		pixelValue[(3*i)+1] = g;
+		pixelValue[(3*i)+2] = b;
 	}
 
 }
@@ -131,29 +132,73 @@ void Mandelbrot2::createpixelFabric(int start, int end)
 void Mandelbrot2::generateParallelPool()
 {
 
+int randomStep;
 	ThreadPool pool(threadCount);
 
-	for(int i=0;i<rows;++i)
+	if(chunk == 1) for(int i=0; i<rows*cols-1;++i) pool.post([=](){this->createpixelFabric(i,i+1);}); //1 PIXEL per task
+
+	if(chunk == 2) for(int i=0; i<(rows*cols)-1;i+=(rows/2)+1) pool.post([=](){this->createpixelFabric(i,i+rows/2);}); //LESS THAN 1 ROW per task
+
+	if(chunk == 3)
 	{
-			pool.post([=](){this->createpixelFabric(i*rows,(i*rows)+cols-1);});
+		for(int i=0;i<rows;++i)
+		{
+			pool.post([=](){this->createpixelFabric(i*rows,(i*rows)+cols-1);}); //1 ROW per task
+		}
 	}
 
-//	createpixelFabric((threadCount-1)*(rows*cols)/threadCount,threadCount*(rows*cols)/threadCount);
+	if(chunk == 4) 
+	{
+		for (int i=0; i<rows*cols-1; )
+		{
+			randomStep = rand() % 512 + 513;
+			if(i+randomStep > rows*cols-1) randomStep = rows*cols-1-i;
+			pool.post([=](){this->createpixelFabric(i,randomStep+i);}); //MORE THAN 1 ROW BUT NOT EVEN per task
+			i +=randomStep+1;
+		}
+	}
+
+	if(chunk == 5) 
+	{
+		for(int i=0;i<rows*cols-1;i+= rows/threadCount)
+		{
+			if(i+(rows/threadCount) > rows*cols-1)
+			{
+				pool.post([=](){this->createpixelFabric(i,rows*cols-1);});
+				i = rows*cols+50;
+			}
+			else
+			{
+				pool.post([=](){this->createpixelFabric(i,i+(rows/threadCount));}); // ROWS/n
+			}
+		}
+	}
+
+
+	/*
+		 for(int i=0;i<rows;++i)
+		 {
+		 pool.post([=](){this->createpixelFabric(i*rows,(i*rows)+cols-1);}); //1 ROW per task
+		 }
+		 */
+
+
+	//	createpixelFabric((threadCount-1)*(rows*cols)/threadCount,threadCount*(rows*cols)/threadCount);
 
 	//notify loop
 	/*
-	while(pool.getPostCount())
-	{
-		pool.notify();
-	}
-	*/
+		 while(pool.getPostCount())
+		 {
+		 pool.notify();
+		 }
+		 */
 	while(!pool.queueEmpty() && pool.getPostCount())
 	{
 		pool.notify();
 	}
 
 	pool.stop();
-	
+
 
 
 }

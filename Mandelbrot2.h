@@ -6,7 +6,7 @@
 class Mandelbrot2{
 
 	public:
-	Mandelbrot2(std::string file, int rows, int cols, double x_1, double y_1, double x_2, double y_2, int maxIters, int numThreads);
+	Mandelbrot2(std::string file, int rows, int cols, double x_1, double y_1, double x_2, double y_2, int maxIters, int numThreads, int chunky);
 
 	std::vector<int> pixelValue;
 	void generate();
@@ -22,6 +22,7 @@ class Mandelbrot2{
 	double x1,y1,x2,y2;
 	int maxIters;
 	int threadCount;
+	int chunk;
 
 
 

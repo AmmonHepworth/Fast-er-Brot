@@ -4,25 +4,32 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
 
 
 int main(){
 
-
-
-	Mandelbrot2 m1("m1.ppm",512,512,(double)-2,(double)1,(double)1,(double)-1,1024, 4);
+	Mandelbrot2 m1("m1.ppm",512,512,(double)-2,(double)1,(double)1,(double)-1,1024, 4, 5);
 	m1.generateParallelPool();
 	Timer mand1;
-
-while(true)
-{
+	std::vector<std::ofstream> outFile;
+	outFile.push_back(std::ofstream("./graphFiles/pixel.dat"));
+	outFile.push_back(std::ofstream("./graphFiles/lessRow.dat"));
+	outFile.push_back(std::ofstream("./graphFiles/row.dat"));
+	outFile.push_back(std::ofstream("./graphFiles/moreRow.dat"));
+	outFile.push_back(std::ofstream("./graphFiles/rowDivN.dat"));
+	
+	for(int chunkType=1;chunkType<6;++chunkType)
+	{
+		std::cout << "ChunkType: " << chunkType << std::endl;
 		for(int i=1; i<9; ++i)
 		{
 			{
-				std::cout << mand1.timeTask<Mandelbrot2, &Mandelbrot2::generateParallelPool>(new Mandelbrot2("m1.ppm", 512, 512,(double)-2,(double)1,(double)1,(double)-1, 1024, i)) << std::endl;
+				outFile[chunkType-1] << i << " " ;
+				outFile[chunkType-1] << mand1.timeTask<Mandelbrot2, &Mandelbrot2::generateParallelPool>(new Mandelbrot2("m1.ppm", 512, 512,(double)-2,(double)1,(double)1,(double)-1, 1024, i, chunkType)) << std::endl;
 			}
 		}
-		}
+	}
 	m1.write();
 
 	/*
