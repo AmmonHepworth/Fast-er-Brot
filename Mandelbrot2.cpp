@@ -141,7 +141,13 @@ void Mandelbrot2::generateParallelPool()
 //	createpixelFabric((threadCount-1)*(rows*cols)/threadCount,threadCount*(rows*cols)/threadCount);
 
 	//notify loop
+	/*
 	while(pool.getPostCount())
+	{
+		pool.notify();
+	}
+	*/
+	while(!pool.queueEmpty() && pool.getPostCount())
 	{
 		pool.notify();
 	}
